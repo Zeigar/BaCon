@@ -1,4 +1,4 @@
 BaCon
 =====
 
-Bayesian connectomics toolbox
+Connectomics toolbox
