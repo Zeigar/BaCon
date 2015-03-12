@@ -1,4 +1,4 @@
-function [sample] = struct_conn_density_prior(A0, N, structparam, priorparam, T)
+function [A,P] = struct_conn_density_prior(A0, N, structparam, priorparam, T)
 % MCMC-Metropolis sampler for structural connectivity based on a Dirichlet
 % compund multinomial distribution, as described in [1], together with a
 % stochastic prior on the probability of an edge. 
@@ -66,6 +66,3 @@ for e=linidx(randperm(E))'
         P = P + alpha;    
     end     
 end
-
-sample.A = A;
-sample.P = P;

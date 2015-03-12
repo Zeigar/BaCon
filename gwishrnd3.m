@@ -27,12 +27,13 @@ N = cell(1,p);
 for j=1:p
     a = G(j,:);
     a(j) = 0;
-    N{j} = (a==1);
+    N{j} = find(a); %(a==1);
 end
 
 neg=cell(1,p);
 for j=1:p
-    neg{j} = (1:p~=j);
+%     neg{j} = (1:p~=j);
+    neg{j} = [1:j-1, j+1:p];
 end
 
 i = 0;
