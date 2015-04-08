@@ -29,6 +29,11 @@ end
 figure; imagesc(mean(Gsamples,3)); axis square; colormap hot; caxis([0 1]);
 figure; imagesc(mean(Rsamples,3)); axis square; colormap jet; caxis([-1 1]);
 
+%% Faster MEX (C++) implementation
+
+[Gsamples,Ksamples] = ggm_cbf_mex(G,S,n,nsamples); 
+figure; imagesc(mean(Gsamples,3)); axis square; colormap hot; caxis([0 1]);
+
 %% estimate structural connectivity
 
 p = length(N);
