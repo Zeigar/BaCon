@@ -1,4 +1,5 @@
 clear all;
+cd ggm\;
 load ../demodata.mat;
 
 %% estimate P(G,K|X)
