@@ -16,6 +16,7 @@ function dLogLikelihood = delta_log_dcm(N, ap, an, k, l, gProposal, gCurrent)
 %
 % Last modified: April 8th, 2014
 
+
 nodecount = length(N);
 
 e_kl = gProposal(k, l);
@@ -34,6 +35,9 @@ term4 = gammaln(anew_sum_k + sum(N(k, :))) - gammaln(aold_sum_k + sum(N(k, :)));
 
 anew_lk = e_lk * ap + (1 - e_lk) * an;
 aold_lk = (1 - e_lk) * ap + e_lk * an;
+
+sum(N(k,:))
+sum(N(l,:))
 
 anew_sum_l = sum(gProposal(l,:)) * ap + (nodecount - sum(gProposal(l,:))) * an;
 aold_sum_l = sum(gCurrent(l,:)) * ap + (nodecount - sum(gCurrent(l,:))) * an;

@@ -21,9 +21,8 @@ G = eye(p);
 figure; imagesc(mean(Gsamples,3)); axis square; colormap hot; caxis([0 1]); % posterior expectation of dependencies
 figure; imagesc(prec2parcor(mean(Ksamples,3))); axis square; colormap jet; caxis([-1 1]); % posterior expectation of partial correlations
 
-[pr,ix] = sample_dist(Gsamples);
-
-figure; bar(sort(pr)); set(gca, 'yscale', 'log')
+[pr,~] = sample_dist(Gsamples);
+figure; bar(sort(pr)); % distribution of model probabilities
 
 % slow matlab implementation:
 
@@ -49,6 +48,20 @@ figure; imagesc(mean(Rsamples,3)); axis square; colormap jet; caxis([-1 1]); % p
 p = length(N);
 
 nsamples = 500;
+
+% fast MEX implementation:
+
+a1 = 1.0; a0 = 0.1, a = 1, b = 1;
+
+tic; 
+Gsamples = struct_conn_density_prior_mex(G, N, 1.0, 0.1, 1, 1, nsamples); 
+toc;
+
+figure;
+imagesc(mean(Gsamples,3)); colormap hot; axis square; colorbar; % posterior expectation of edge probability
+
+% slow matlab implementation:
+
 Gsamples = zeros(p,p,nsamples);
 G = zeros(p);
 
@@ -61,6 +74,12 @@ toc;
 
 figure;
 imagesc(mean(Gsamples,3) + eye(p)); colormap hot; axis square; colorbar; % posterior expectation of edge probability
+
+% probability distribution
+
+[pr,~] = sample_dist(Gsamples);
+figure; bar(sort(pr)); % distribution of model probabilities (often extremely flat, as many models are allowed with slight differences)
+
 
 %% MAP estimate G'= argmax_G [P(G|N)]
 

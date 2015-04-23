@@ -48,21 +48,38 @@ figure; imagesc(mean(Rsamples,3)); axis square; colormap jet; caxis([-1 1]); % p
 p = length(N);
 
 nsamples = 500;
-Gsamples = zeros(p,p,nsamples);
+
+% % fast MEX implementation under construction:
+% 
+% a1 = 1.0; a0 = 0.1; a = 1; b = 1;
+% 
+% tic; 
+% Gsamples_mex = struct_conn_density_prior_mex(G, N, a1, a0, a, b, nsamples); 
+% toc;
+% 
+% figure;
+% imagesc(mean(Gsamples_mex,3)); colormap hot; axis square; colorbar; title('MEX'); % posterior expectation of edge probability
+
+% slow matlab implementation:
+
+Gsamples_mlb = zeros(p,p,nsamples);
 G = zeros(p);
 
 tic;
 for i=1:nsamples
     G = struct_conn_density_prior(G,N);
-    Gsamples(:,:,i) = G;
+    Gsamples_mlb(:,:,i) = G;
 end
 toc;
 
 figure;
-imagesc(mean(Gsamples,3) + eye(p)); colormap hot; axis square; colorbar; % posterior expectation of edge probability
+imagesc(mean(Gsamples_mlb,3) + eye(p)); colormap hot; axis square; colorbar; title('MATLAB'); % posterior expectation of edge probability
+
+% probability distribution
 
 [pr,~] = sample_dist(Gsamples);
-figure; bar(sort(pr)); % distribution of model probabilities
+figure; bar(sort(pr)); % distribution of model probabilities (often extremely flat, as many models are allowed with slight differences)
+
 
 %% MAP estimate G'= argmax_G [P(G|N)]
 

@@ -50,9 +50,11 @@ n = length(G);
 
 linidx = find(triu(ones(n),1));
 E = length(linidx);
-for e=linidx(randperm(E))'
+% for e=linidx(randperm(E))'
     Gprop = G;
-    [i, j] = ind2sub([n n], e);
+    i = 1;
+    j=3;
+%     [i, j] = ind2sub([n n], e);
     Gprop(i,j) = 1 - G(i,j);
     Gprop(j,i) = 1 - G(j,i);
 
@@ -65,4 +67,4 @@ for e=linidx(randperm(E))'
         G = Gprop;
         P = P + alpha;    
     end     
-end
+% end
