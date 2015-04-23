@@ -1,4 +1,4 @@
-function [A,P] = struct_conn_density_prior(A0, N, structparam, priorparam, T)
+function [G,P] = struct_conn_density_prior(G0, N, structparam, priorparam, T)
 % MCMC-Metropolis sampler for structural connectivity based on a Dirichlet
 % compund multinomial distribution, as described in [1], together with a
 % stochastic prior on the probability of an edge. 
@@ -44,25 +44,25 @@ if nargin < 5 || isempty(T)
     T = 1;
 end
 
-A = A0;
+G = G0;
 P = 0;
-n = length(A);
+n = length(G);
 
 linidx = find(triu(ones(n),1));
 E = length(linidx);
 for e=linidx(randperm(E))'
-    Aprop = A;
+    Gprop = G;
     [i, j] = ind2sub([n n], e);
-    Aprop(i,j) = 1 - A(i,j);
-    Aprop(j,i) = 1 - A(j,i);
+    Gprop(i,j) = 1 - G(i,j);
+    Gprop(j,i) = 1 - G(j,i);
 
-    dL = delta_log_dcm(N, ap, an, i, j, Aprop, A);    
-    dP = (1 - 2 * Aprop(i,j)) * log( a /  b);
+    dL = delta_log_dcm(N, ap, an, i, j, Gprop, G);    
+    dP = (1 - 2 * Gprop(i,j)) * log( a /  b);
 
     alpha = dL + dP;
     
     if rand <= min(1,exp(alpha)^(1/T))
-        A = Aprop;
+        G = Gprop;
         P = P + alpha;    
     end     
 end

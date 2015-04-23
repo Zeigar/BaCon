@@ -474,8 +474,8 @@ for e=linidx(randperm(E))'
     
     Aprop(i,j) = 1-Aprop(i,j);
     Aprop(j,i) = 1-Aprop(j,i);
-
-    dL = DCM_DL(N, ap, an, i, j, Aprop, A);
+    
+    dL = delta_log_dcm(N, ap, an, i, j, Aprop, A);    
 
     a = find(Z(:,i));
     b = find(Z(:,j));
