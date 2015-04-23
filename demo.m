@@ -21,6 +21,9 @@ G = eye(p);
 figure; imagesc(mean(Gsamples,3)); axis square; colormap hot; caxis([0 1]); % posterior expectation of dependencies
 figure; imagesc(prec2parcor(mean(Ksamples,3))); axis square; colormap jet; caxis([-1 1]); % posterior expectation of partial correlations
 
+[pr,~] = sample_dist(Gsamples);
+figure; bar(sort(pr)); % distribution of model probabilities
+
 % slow matlab implementation:
 
 G = eye(p); % initial sample
@@ -57,6 +60,9 @@ toc;
 
 figure;
 imagesc(mean(Gsamples,3) + eye(p)); colormap hot; axis square; colorbar; % posterior expectation of edge probability
+
+[pr,~] = sample_dist(Gsamples);
+figure; bar(sort(pr)); % distribution of model probabilities
 
 %% MAP estimate G'= argmax_G [P(G|N)]
 

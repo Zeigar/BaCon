@@ -8,11 +8,22 @@ load demodata.mat;
 % Posterior of conditional independence and partial correlations
 
 [n,p] = size(subcort);
-
 Z = zscore(subcort);
 S = Z'*Z;
 
 nsamples = 1000;
+
+% fast MEX implementation:
+
+G = eye(p);
+[Gsamples, Ksamples] = ggm_cbf_mex(G,S,n,nsamples);
+
+figure; imagesc(mean(Gsamples,3)); axis square; colormap hot; caxis([0 1]); % posterior expectation of dependencies
+figure; imagesc(prec2parcor(mean(Ksamples,3))); axis square; colormap jet; caxis([-1 1]); % posterior expectation of partial correlations
+
+[pr,ix] = sample_dist(Gsamples);
+
+figure; bar(sort(pr)); set(gca, 'yscale', 'log')
 
 % slow matlab implementation:
 
@@ -33,21 +44,9 @@ toc;
 figure; imagesc(mean(Gsamples,3)); axis square; colormap hot; caxis([0 1]); % posterior expectation of dependencies
 figure; imagesc(mean(Rsamples,3)); axis square; colormap jet; caxis([-1 1]); % posterior expectation of partial correlations
 
-% fast MEX implementation:
-
-G = eye(p);
-[Gsamples, Ksamples] = ggm_cbf_mex(G,S,n,nsamples);
-
-figure; imagesc(mean(Gsamples,3)); axis square; colormap hot; caxis([0 1]); % posterior expectation of dependencies
-figure; imagesc(prec2parcor(mean(Ksamples,3))); axis square; colormap jet; caxis([-1 1]); % posterior expectation of partial correlations
-
-%% estimate structural connectivity
+%% estimate structural connectivity, full distribution P(G|N)
 
 p = length(N);
-prior.a = 1;
-prior.b = 4; % expected density = a/(a+b)
-
-%% full distribution
 
 nsamples = 500;
 Gsamples = zeros(p,p,nsamples);
@@ -63,7 +62,10 @@ toc;
 figure;
 imagesc(mean(Gsamples,3) + eye(p)); colormap hot; axis square; colorbar; % posterior expectation of edge probability
 
-%% MAP estimate
+%% MAP estimate G'= argmax_G [P(G|N)]
+
+prior.a = 1;
+prior.b = 4; % expected density = a/(a+b)
 
 nsamples = 100;
 G = zeros(p);
@@ -81,29 +83,27 @@ figure;
 imagesc(G + eye(p)); colormap hot; axis square; colorbar; % MAP estimate of G
 
 
-%% estimate functional connectivity with structural constraint
+%% estimate functional connectivityas precision K (or scaled to partial correlations R) with structural constraint G: P(K|G,X)
 
 nsamples = 100;
 Rsamples = zeros(p,p,nsamples);
 S = cov(X);
+Sinv = inv(S);
 df = 3 + n;
 
 tic;
 for i=1:nsamples
-    K = gwishrnd3(G + eye(p), S, df); % diagonal must be ones
+    K = gwishrnd_mex(G, Sinv, df); % diagonal must be ones
+    % K = gwishrnd3(max(G,eye(p)), S, df); % Matlab alternative is slower,
+    % use only if MEX is not available
     Rsamples(:,:,i) = prec2parcor(K);    
 end
 toc;
 
-R_expectation = squeeze(mean(Rsamples,3));
-
 figure;
-imagesc(R_expectation);
-colormap jet;
-axis square; colorbar;
-caxis([-1 1]);
+imagesc(mean(Rsamples,3)); colormap jet; axis square; colorbar; caxis([-1 1]); % posterior expectation of partial correlations given G
 
-%% estimate MAP structural connectivity with nonparametric clustering prior
+%% estimate MAP structural connectivity and clustering with nonparametric prior: P(A,Z|N)
 
 mem = crprnd(log(p),p);
 Z = mem2cluster(mem);
@@ -122,10 +122,10 @@ conn_samples = cell(nsamples,nsubjects);
 clust_samples = cell(nsamples,1);
 num_clusters = zeros(nsamples,1);
 
-T = 10;
-Tr = .5^(10/nsamples);
+T = 10; % initial temperature
+Tr = .5^(10/nsamples); % temperature decrease
 
-prior.alpha = log(p);
+prior.alpha = log(p); % concentration parameter of Chinese restaurant process
 prior.betap = [1 1]; % [1 1] for uninformative prior, [x y], with x>y for modular clusters
 prior.betan = fliplr(prior.betap);
 
