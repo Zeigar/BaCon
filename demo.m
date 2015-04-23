@@ -19,20 +19,17 @@ Gsamples = zeros(p,p,nsamples); % conditional independencies
 Ksamples = zeros(p,p,nsamples); % precision matrices
 Rsamples = zeros(p,p,nsamples); % partial correlations
 
+tic;
 for i=1:nsamples
     [G,K] = ggm_gwish_cbf_direct(G,S,n);
     Gsamples(:,:,i) = G;
     Ksamples(:,:,i) = K;
     Rsamples(:,:,i) = prec2parcor(K);
 end
+toc;
 
 figure; imagesc(mean(Gsamples,3)); axis square; colormap hot; caxis([0 1]);
 figure; imagesc(mean(Rsamples,3)); axis square; colormap jet; caxis([-1 1]);
-
-%% Faster MEX (C++) implementation
-
-[Gsamples,Ksamples] = ggm_cbf_mex(G,S,n,nsamples); 
-figure; imagesc(mean(Gsamples,3)); axis square; colormap hot; caxis([0 1]);
 
 %% estimate structural connectivity
 
