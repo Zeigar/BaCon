@@ -49,16 +49,16 @@ p = length(N);
 
 nsamples = 500;
 
-% % fast MEX implementation under construction:
-% 
-% a1 = 1.0; a0 = 0.1; a = 1; b = 1;
-% 
-% tic; 
-% Gsamples_mex = struct_conn_density_prior_mex(G, N, a1, a0, a, b, nsamples); 
-% toc;
-% 
-% figure;
-% imagesc(mean(Gsamples_mex,3)); colormap hot; axis square; colorbar; title('MEX'); % posterior expectation of edge probability
+% fast MEX implementation under construction:
+
+a1 = 1.0; a0 = 0.1; a = 1; b = 1;
+
+tic; 
+Gsamples_mex = struct_conn_density_prior_mex(zeros(p), N, a1, a0, a, b, nsamples); 
+toc;
+
+figure;
+imagesc(mean(Gsamples_mex,3)); colormap hot; axis square; colorbar; title('MEX'); % posterior expectation of edge probability
 
 % slow matlab implementation:
 
