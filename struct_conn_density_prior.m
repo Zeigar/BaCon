@@ -21,7 +21,7 @@ function [G,P] = struct_conn_density_prior(G0, N, structparam, priorparam, T)
 % Bayesian inference of structural brain networks. NeuroImage, 66C,
 % 543–552.
 %
-% Last modified: April 8th, 2014
+% Last modified: April 28th, 2015
 
 
 if nargin <= 3 || isempty(structparam)
@@ -50,11 +50,9 @@ n = length(G);
 
 linidx = find(triu(ones(n),1));
 E = length(linidx);
-% for e=linidx(randperm(E))'
+for e=linidx(randperm(E))'
     Gprop = G;
-    i = 1;
-    j=3;
-%     [i, j] = ind2sub([n n], e);
+    [i, j] = ind2sub([n n], e);
     Gprop(i,j) = 1 - G(i,j);
     Gprop(j,i) = 1 - G(j,i);
 
@@ -67,4 +65,4 @@ E = length(linidx);
         G = Gprop;
         P = P + alpha;    
     end     
-% end
+end

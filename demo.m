@@ -11,12 +11,14 @@ load demodata.mat;
 Z = zscore(subcort);
 S = Z'*Z;
 
-nsamples = 1000;
+nsamples = 100;
 
 % fast MEX implementation:
 
 G = eye(p);
+tic;
 [Gsamples, Ksamples] = ggm_cbf_mex(G,S,n,nsamples);
+toc;
 
 figure; imagesc(mean(Gsamples,3)); axis square; colormap hot; caxis([0 1]); % posterior expectation of dependencies
 figure; imagesc(prec2parcor(mean(Ksamples,3))); axis square; colormap jet; caxis([-1 1]); % posterior expectation of partial correlations
