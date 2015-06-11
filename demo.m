@@ -1,6 +1,13 @@
 %% Bayesian Connectomics DEMO
-addpath utility\;
+
+addpath data\;
+addpath functional\;
+addpath fusion\;
 addpath ggm\;
+addpath mex\;
+addpath structural\;
+addpath utility\;
+
 clear all;
 load demodata.mat;
 
