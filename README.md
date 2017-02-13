@@ -24,3 +24,5 @@ Related literature
 [4] Max Hinne, Alex Lenkoski, Tom Heskes and Marcel van Gerven, 2014. Efficient sampling of Gaussian graphical models using conditional Bayes factors. Stat 3, pp. 326-336.
 
 [5] Max Hinne, Matthias Ekman, Ronald Janssen, Tom Heskes and Marcel van Gerven, 2015. Probabilistic clustering of the human connectome identifies communities and hubs. PLoS ONE 10(1), pp. e0117179.
+
+[6] Max Hinne, Ronald Janssen, Tom Heskes and Marcel van Gerven, 2015. Bayesian estimation of conditional independence graphs improves functional connectivity estimates. PLoS Computational Biology, 11(11), pp. e1004534.
