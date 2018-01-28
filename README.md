@@ -6,7 +6,7 @@ Bayesian Connectomics toolbox
 Estimate posterior distributions for
 - Structural connectivity, using probabilistic tractography count data.
 	- Prior on network density or
-	- rior on clustering.
+	- Prior on clustering.
 - Functional connectivity using a structural estimate as constraint, using fMRI BOLD signal time series.
 - Functional connectivity using a dynamic constraint (i.e. learn conditional independence and partial correlation simultaneously), using fMRI BOLD signal time series.
 - Functional and structural connectivity simultaneously, using fMRI BOLD signal time series and probabilistic tractography count data.
